@@ -31,6 +31,8 @@ Receipt {
 
 Prompt and output are *hashed*, not stored — content stays private; verifiability is preserved.
 
+A machine-readable JSON Schema for this struct, with concrete field encodings, lives at [`examples/schema/receipt.schema.json`](./examples/schema/receipt.schema.json). Signed reference payloads for each verification result are under [`examples/`](./examples/).
+
 ---
 
 ## API surface (proposed)

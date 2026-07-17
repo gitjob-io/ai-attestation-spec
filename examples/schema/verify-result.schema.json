@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitjob.io/spec/attest/v0.1/verify-result.schema.json",
+  "title": "VerifyResult",
+  "description": "Response of GET /v1/receipts/{receipt_id}/verify in SPEC.md: the outcome of verifying a receipt against the published key set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["result", "key_id", "issued_at"],
+  "properties": {
+    "result": {
+      "type": "string",
+      "enum": ["valid", "tampered", "unknown_key", "revoked"],
+      "description": "The single verification outcome. See examples/README.md for precedence."
+    },
+    "key_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The key_id carried by the receipt that was verified."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The issued_at timestamp carried by the receipt that was verified."
+    }
+  }
+}

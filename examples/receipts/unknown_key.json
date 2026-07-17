@@ -1,0 +1,9 @@
+{
+  "receipt_id": "3a1c2b40-5e77-4c9a-9f01-2d6b8e4415aa",
+  "model_id": "anthropic/claude-opus-4-8",
+  "prompt_hash": "sha256:f6d99f8697b0eeb6f0cff6021495c32b466f52ac095f06801cce29572c1c3848",
+  "output_hash": "sha256:2355ef47700aec292481b5ce214885bac33d5441d13d214b47111ce52e3c3f2b",
+  "issued_at": "2026-05-03T18:24:11Z",
+  "key_id": "gitjob-attest-9999-99",
+  "signature": "w8qtlxk9-zHHMJowWxoI4L1uVQ-mUmldeJr6f8IJrHjL-6LjCCpsraY50rLyZKr6I7luHQiojTL5cR8U1n-5Bw"
+}

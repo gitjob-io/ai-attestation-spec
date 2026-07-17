@@ -1,0 +1,19 @@
+{
+  "keys": [
+    {
+      "key_id": "gitjob-attest-2026-05",
+      "algorithm": "ed25519",
+      "public_key": "0EqyMnQrtKs6E2i9RhXk5tAiSrcaAWuvhSCjMsl3hzc",
+      "status": "active",
+      "not_before": "2026-05-01T00:00:00Z"
+    },
+    {
+      "key_id": "gitjob-attest-2025-11",
+      "algorithm": "ed25519",
+      "public_key": "oJql9HpnWYAv-VX43C0qFKXJnSO-l_hkEn_5ODRVpPA",
+      "status": "revoked",
+      "not_before": "2025-11-01T00:00:00Z",
+      "revoked_at": "2026-05-01T00:00:00Z"
+    }
+  ]
+}

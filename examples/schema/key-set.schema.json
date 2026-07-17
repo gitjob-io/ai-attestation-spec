@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitjob.io/spec/attest/v0.1/key-set.schema.json",
+  "title": "KeySet",
+  "description": "The published public-key set with rotation history, as returned by GET /v1/receipts/keys in SPEC.md. Verifiers resolve a receipt's key_id against this set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["keys"],
+  "properties": {
+    "keys": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/publicKey" }
+    }
+  },
+  "$defs": {
+    "publicKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key_id", "algorithm", "public_key", "status"],
+      "properties": {
+        "key_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier referenced by a receipt's key_id."
+        },
+        "algorithm": {
+          "type": "string",
+          "const": "ed25519",
+          "description": "Signature algorithm. Only ed25519 is defined in v0.1."
+        },
+        "public_key": {
+          "type": "string",
+          "description": "Ed25519 public key (32 raw bytes), base64url-encoded without padding.",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "revoked"],
+          "description": "Whether the key may still be trusted. A revoked key yields the `revoked` verification result."
+        },
+        "not_before": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Earliest issuance time this key signed for."
+        },
+        "revoked_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the key was revoked. Present only when status is \"revoked\"."
+        }
+      }
+    }
+  }
+}

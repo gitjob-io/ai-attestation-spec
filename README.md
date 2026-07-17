@@ -21,7 +21,7 @@ LLM providers already attest server-side integrity (confidential inference, nati
 - `SPEC.md` — the specification itself
 - `CONTRIBUTING.md` — how to participate
 - `LICENSE` — MIT
-- *(planned)* `examples/` — reference receipt payloads and verification walkthroughs
+- `examples/` — machine-readable JSON Schemas, canonical reference receipt payloads (one per verification result), and a dependency-free reference verifier
 - *(planned)* `tests/` — conformance test suite for issuers and verifiers
 
 The reference implementation library (`@gitjob/attest`) lives in a separate repository.

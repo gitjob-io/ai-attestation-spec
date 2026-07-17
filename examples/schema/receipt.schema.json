@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitjob.io/spec/attest/v0.1/receipt.schema.json",
+  "title": "Receipt",
+  "description": "A signed receipt proving that a given prompt produced a given output on a given model at a given time. Prompt and output are hashed, not stored. Encodings match the Receipt primitive in SPEC.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "model_id",
+    "prompt_hash",
+    "output_hash",
+    "issued_at",
+    "key_id",
+    "signature"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique per completion. Lowercase canonical UUID string (RFC 4122).",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "model_id": {
+      "type": "string",
+      "description": "Canonical, provider-namespaced model identifier, e.g. \"anthropic/claude-opus-4-8\".",
+      "pattern": "^[a-z0-9][a-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "minLength": 3
+    },
+    "prompt_hash": {
+      "type": "string",
+      "description": "SHA-256 of the canonicalized request body, lowercase hex, prefixed \"sha256:\".",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "output_hash": {
+      "type": "string",
+      "description": "SHA-256 of the full response body, lowercase hex, prefixed \"sha256:\".",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Issuance time as an RFC 3339 / ISO 8601 UTC timestamp.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "key_id": {
+      "type": "string",
+      "description": "Identifier of the public key used for verification; resolved against the published key set.",
+      "minLength": 1
+    },
+    "signature": {
+      "type": "string",
+      "description": "Ed25519 signature (64 raw bytes) over the canonical signing input, base64url-encoded without padding.",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  }
+}
