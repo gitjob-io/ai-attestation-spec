@@ -26,6 +26,19 @@ LLM providers already attest server-side integrity (confidential inference, nati
 
 The reference implementation library (`@gitjob/attest`) lives in a separate repository.
 
+## Try it
+
+No dependencies — Node's built-in `crypto` only.
+
+```sh
+node examples/tools/verify.mjs examples/receipts/valid.json
+# -> { "result": "valid", "key_id": "...", "issued_at": "..." }
+```
+
+Swap in `examples/receipts/tampered.json`, `unknown_key.json`, or `revoked.json`
+to see the other three verification outcomes. See [examples/README.md](./examples/README.md)
+for the schema, field encodings, and how the fixtures are generated.
+
 ## Status and stability
 
 Draft v0.1. Expect breaking changes until v1.0.
