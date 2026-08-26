@@ -1,0 +1,75 @@
+{
+  "spec": "Attested AI-Assisted Work",
+  "version": "0.3",
+  "note": "Reference conformance vectors. Verify each receipt against the keyset; the result must equal `expected`. Canonicalization: RFC 8785 JCS over the receipt with `signature` omitted; ed25519 over the UTF-8 canonical bytes.",
+  "keyset": [
+    {
+      "key_id": "gitjob-demo-2025q4",
+      "public_key": "5OhiVPH5Jv71iLGKyG/Ue8zZqbm6oRWN6P/sMpJkWVs=",
+      "status": "revoked",
+      "created_at": "2025-09-01T00:00:00Z",
+      "rotated_at": "2025-11-01T00:00:00Z"
+    },
+    {
+      "key_id": "gitjob-demo-2026q2",
+      "public_key": "mSBfVA1C4Ev9CNJzhGeW/RxLjmZfYNKJxAsGg6X7rJI=",
+      "status": "active",
+      "created_at": "2026-04-01T00:00:00Z",
+      "rotated_at": null
+    }
+  ],
+  "cases": [
+    {
+      "receipt": {
+        "receipt_id": "demo-valid-001",
+        "model_id": "gitjob.io/claude-sonnet-4-6",
+        "prompt_hash": "26ace40ef267e0f859d3d75f7aa65f9eb5ed7212c0f70741ac167a029535612a",
+        "output_hash": "8c6cfc3914fd3f4f8861ee3541d79ca67db71532eb3c3e9a909bc4e51c1b7cb8",
+        "issued_at": "2026-04-12T14:32:00Z",
+        "nonce": "6tmw7Mc3Ylw3molRAzstIg",
+        "key_id": "gitjob-demo-2026q2",
+        "signature": "2Kqagea9BIeOjpqos31nUJBi65WLYKXQKSF7alH75hbqs729bGhwrwgKXJp5nxrbWK0jQi4MSG9Y1CzXqGRGBQ=="
+      },
+      "expected": "valid"
+    },
+    {
+      "receipt": {
+        "receipt_id": "demo-tampered-002",
+        "model_id": "gitjob.io/claude-sonnet-4-6",
+        "prompt_hash": "ac47d4c46f478e6eb7f7ebfed4177d305e7e6b25fdac81b6d0a98acfdecea40d",
+        "output_hash": "2fbf0871867640b77826fee717eba35f0319d98bf59298e235de4acfeaca7180",
+        "issued_at": "2026-04-13T09:15:00Z",
+        "nonce": "vUmRXAYdJo7hMvL3PPIPDg",
+        "key_id": "gitjob-demo-2026q2",
+        "signature": "MzAkDIL+VceFdolq5PoqH9cDLZC6DHNbAdXWUpkquIoYJuQHIpnhzu/iAsgDVke5oJ4+gluCs0wL+xqEsBx3AA=="
+      },
+      "expected": "tampered"
+    },
+    {
+      "receipt": {
+        "receipt_id": "demo-unknown-key-003",
+        "model_id": "gitjob.io/claude-sonnet-4-6",
+        "prompt_hash": "28de1269d38c0e1676f059df1633e6a2b730b66ae66fd05c2abf59b0aa40aa97",
+        "output_hash": "3167b20a2cbc95f4c41f539d652d267d936b0f3da386f6193c067f9ad8fd0337",
+        "issued_at": "2026-04-14T11:08:00Z",
+        "nonce": "bvQ0wh114qGj9YslDQAavw",
+        "key_id": "gitjob-demo-unregistered",
+        "signature": "unbvqjLHeZevxUk0XnUHSAJgzq5N4SHfy4U4cnB8u8uKLp8cpXiSs9gJIWtQ2qdpUxXKarSUIgq18vR/e6mDBQ=="
+      },
+      "expected": "unknown_key"
+    },
+    {
+      "receipt": {
+        "receipt_id": "demo-revoked-004",
+        "model_id": "gitjob.io/claude-sonnet-4-6",
+        "prompt_hash": "b867a371e045d43721dfa27c9cd8f6d9d46ade5f40186248868abc23568f3cdd",
+        "output_hash": "7362f6c4e039770986ca16b5200889dc8a7b0b5a25d6155308cc6a22319bef1e",
+        "issued_at": "2025-12-01T08:00:00Z",
+        "nonce": "swmo3rerFIFveAkiZYMsqw",
+        "key_id": "gitjob-demo-2025q4",
+        "signature": "OOVDtbnGiAHGeF3M6olj+bpkiF3wBFB3xzdgxTbm3hir9Q8yIObs2kVVY0MeYkWAv0UTeUWSSOizqi9R1B4UAA=="
+      },
+      "expected": "revoked"
+    }
+  ]
+}
