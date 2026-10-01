@@ -10,7 +10,8 @@ node tests/run-vectors.mjs
 ```
 
 The runner drives `examples/tools/verify.mjs` and exits non-zero on the first mismatch, so it
-works as a CI gate.
+works as a CI gate. `verify-cli.test.mjs` (`node --test tests/verify-cli.test.mjs`) is a
+regression test for the verifier's command-line entry point.
 
 ## Format
 
@@ -46,4 +47,12 @@ present and the signature is computed over the same bytes either way. But a vect
 So the signature layer is compatible and the schema layer is not. An implementer who builds to the
 published schema and then tests against a real reference receipt will be rejected at validation.
 
-Resolving this is a specification decision, not an editorial one — see the repository `ROADMAP.md`.
+A second divergence, in verification **precedence**: the reference implementation checks
+revocation *as of `issued_at`* before the signature (`unknown_key > revoked > tampered > valid`,
+as in the hand-verification steps above), while `examples/tools/verify.mjs` and
+`examples/README.md` check the signature first and treat `status: "revoked"` as revoked
+regardless of `issued_at` (`unknown_key > tampered > revoked > valid`). All four vectors pass
+either way, but a tampered receipt under a revoked key, or a receipt issued *before* its key's
+revocation, gets a different result from each.
+
+Resolving these is a specification decision, not an editorial one — see the repository `ROADMAP.md`.

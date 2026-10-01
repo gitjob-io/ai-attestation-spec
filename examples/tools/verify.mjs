@@ -18,8 +18,8 @@
 //   node verify.mjs <receipt.json> [key-set.json]
 // Defaults the key set to ../keys.json relative to this file.
 
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { readFileSync, realpathSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, resolve } from "node:path";
 import { createPublicKey, verify as edVerify } from "node:crypto";
 import { canonicalSigningInput } from "./canonicalize.mjs";
@@ -69,8 +69,15 @@ export function verifyReceipt(receipt, keySet) {
   return { result: "valid", ...out };
 }
 
-// CLI entry point.
-if (import.meta.url === `file://${process.argv[1]}`) {
+// CLI entry point. Compare URLs, not a hand-built `file://` string: paths with
+// spaces or other URL-escaped characters (and symlinked paths such as macOS
+// /tmp) would otherwise never match, and the script would silently exit 0 --
+// which a caller reads as "valid".
+const invokedDirectly =
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+
+if (invokedDirectly) {
   const receiptPath = process.argv[2];
   if (!receiptPath) {
     console.error("usage: node verify.mjs <receipt.json> [key-set.json]");

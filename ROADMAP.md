@@ -22,73 +22,31 @@ a parked item as a blocker is misreading this file.
 
 ## §0 Do next
 
-> ### ▶ RESUME HERE — session handoff 2026-08-07.
+> ### ▶ RESUME HERE — 2026-10-01
 >
-> **State:** `git status` clean at ROADMAP install time. Repo last committed 2026-07-29. Public
-> draft spec (v0.1, "Open for Comment") for signed AI-assisted-work receipts, model-provider
-> neutral. Published artifact per [[public-thesis-and-footprint]] memory — part of the public
-> outreach corpus.
+> **State:** on `main`, in sync with `origin`. The README's false `@gitjob/attest` claim fix and the
+> `tests/` conformance vectors (4/4 pass, `node tests/run-vectors.mjs`) are committed and pushed
+> (`a11f4ba`). `SPEC.md:59` still lists `@gitjob/attest` as a forward commitment — left
+> deliberately; SPEC.md is never-touch.
 >
-> ### ▶ RESUME HERE — 2026-08-18: the dead-end README claim is FIXED, conformance vectors published, and a real spec defect was found. All uncommitted.
+> **Two spec defects are open — both are YOUR call, not editorial fixes.** Full write-up in
+> `tests/README.md` § Known divergence.
 >
-> **Context.** An OSS-readiness audit found `README.md` claiming in the present tense that
-> "the reference implementation library (`@gitjob/attest`) lives in a separate repository" —
-> **false**: no such package exists on npm (404) or in any public repo. This is a public repo, so a
-> cold reader following that sentence hit a dead end. That was the blocker on the spec leading any
-> outreach.
+> 1. **Schema vs. reference receipt shape.** Published `SPEC.md` + `examples/schema/receipt.schema.json`
+>    are v0.1 with 7 fields and `"additionalProperties": false`; the reference implementation's
+>    vectors are v0.3 and add `nonce` (plus optional `weight_hash`). Signatures verify; schema
+>    validation rejects them. Either (a) add `nonce`/`weight_hash` to schema + SPEC.md and bump
+>    toward v0.3 (matches reality, likely answer), or (b) regenerate vectors against v0.1.
+> 2. **Verification precedence.** The Go reference (`gitjob.io:internal/attest/verify.go`) uses
+>    `unknown_key > revoked > tampered > valid` with revocation judged *as of `issued_at`*;
+>    `examples/tools/verify.mjs` and `examples/README.md` use `unknown_key > tampered > revoked >
+>    valid` and ignore `issued_at`. The four vectors don't exercise the difference; a receipt
+>    issued before its key's revocation is `valid` in one and `revoked` in the other. Pick one,
+>    then align the other and add a vector that pins it.
 >
-> **What shipped into the tree (uncommitted).**
-> 1. **README corrected.** The `@gitjob/attest` sentence now says the packaged library is *planned,
->    not yet published*, and points readers at `examples/tools/verify.mjs` plus the vectors as the
->    working reference. `SPEC.md:59` still lists `@gitjob/attest` under "gitjob.io commits to" —
->    **left deliberately**: that is a forward commitment, not a false statement of current fact, and
->    this repo's `CLAUDE.md` marks SPEC.md never-touch.
-> 2. **`tests/` now exists** — the README's `*(planned)*` entry is real. `tests/vectors.json` is the
->    4-case conformance suite copied from the private Go implementation
->    (`gitjob.io:internal/attest/testdata/conformance/`); checked first and it contains only ed25519
->    **public** keys, no secret material. `tests/run-vectors.mjs` drives the reference verifier over
->    them and exits non-zero on mismatch, so it is CI-ready. **Verified by running it: 4/4 pass.**
->    This also discharges one of SPEC.md's three stated commitments ("conformance test suite").
->
-> **⚠ A REAL SPEC DEFECT SURFACED — this is YOUR call, not an editorial fix.**
-> The reference implementation's receipt shape has drifted ahead of the published spec text:
->
-> | | Published (`SPEC.md`, `examples/schema/receipt.schema.json`) | `tests/vectors.json` |
-> |---|---|---|
-> | Version | Draft v0.1 | v0.3 |
-> | Receipt | 7 fields, **`"additionalProperties": false`** | 8 — adds `nonce` (plus `weight_hash` where present) |
->
-> Measured, not assumed: every vector **verifies** correctly (4/4) because RFC 8785 canonicalization
-> covers whatever fields are present — but a vector receipt **fails schema validation** against the
-> published schema, because that schema forbids additional properties and does not define `nonce`.
-> **Signature layer compatible, schema layer not.** An implementer who builds to the published
-> schema and then meets a real reference receipt gets rejected at validation. Full write-up in
-> `tests/README.md`.
->
-> **▶ NEXT ACTION, in priority order.**
-> 1. **Decide the schema question.** Either (a) add `nonce` and optional `weight_hash` to
->    `examples/schema/receipt.schema.json` + SPEC.md and bump the published version toward v0.3, or
->    (b) regenerate the vectors against the v0.1 shape. (a) matches reality and is the likely answer;
->    (b) keeps v0.1 pure. Bumping a published spec's version is an authorship decision — an agent
->    should not make it.
-> 2. **Then commit + push.** The spec is publicly readable, so the false-claim fix is only live once
->    pushed. Until then the dead end is still up.
-> 3. **Optional, supersedes the interim fix:** actually build and publish the TypeScript
->    `@gitjob/attest` package (needs npm scope setup; the account already publishes `claude-ace`).
->    Gate it on `tests/run-vectors.mjs` passing.
-> 4. Only after 1–2: the spec is clean enough to lead outreach.
->
-> #### What shipped
-> Draft v0.1 spec: signed-receipt primitive, proposed API surface, verification flow, a
-> reference-implementation commitment (gitjob.io).
->
-> #### What I found by reading that nobody reported
-> No rival plan/backlog/handoff doc existed anywhere in the repo — this is the first roadmap.
->
-> #### What I deliberately did NOT do, and why
-> Did not fold `SPEC.md`'s "Open questions" section into this roadmap — those are questions
-> posed *to* implementing providers as part of the spec's content, not open engineering work
-> owned by this repo.
+> **▶ Next, in order.** Decide 1 and 2 → align schema/verifier/vectors → (optional) build and
+> publish the TypeScript `@gitjob/attest` package, gated on `tests/run-vectors.mjs` → the spec is
+> clean enough to lead outreach.
 
 ## §1 Open items
 
