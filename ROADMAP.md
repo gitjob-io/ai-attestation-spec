@@ -27,7 +27,10 @@ a parked item as a blocker is misreading this file.
 > **State:** on `main`, in sync with `origin`. Two gates, both run in CI
 > (`.github/workflows/conformance.yml`): `node tests/run-vectors.mjs` (4/4 conformance vectors)
 > and `node --test` (examples conform to their schemas, verify as named, and regenerate
-> byte-identically; verifier CLI regression). `SPEC.md:59` still lists `@gitjob/attest` as a forward commitment — left
+> byte-identically; verifier CLI exit codes; RFC 8785 signing input incl. `"__proto__"` keys;
+> strict signature encoding). `verify.mjs` accepts unpadded base64url or padded base64
+> signatures (the two encodings in use) and nothing looser — revisit if decision 1 pins one.
+> `SPEC.md:59` still lists `@gitjob/attest` as a forward commitment — left
 > deliberately; SPEC.md is never-touch.
 >
 > **Two spec defects are open — both are YOUR call, not editorial fixes.** Full write-up in

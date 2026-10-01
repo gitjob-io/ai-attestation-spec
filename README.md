@@ -22,7 +22,7 @@ LLM providers already attest server-side integrity (confidential inference, nati
 - `CONTRIBUTING.md` — how to participate
 - `LICENSE` — MIT
 - `examples/` — machine-readable JSON Schemas, canonical reference receipt payloads (one per verification result), and a dependency-free reference verifier
-- `tests/` — conformance vectors plus a runner (`node tests/run-vectors.mjs`); see `tests/README.md`
+- `tests/` — conformance vectors plus a runner (`node tests/run-vectors.mjs`) and fixture/verifier tests (`node --test`); see `tests/README.md`
 
 The dependency-free verifier in `examples/tools/` is the reference implementation for now. A
 packaged library (`@gitjob/attest`) is **planned, not yet published** — it is not on npm and has no
