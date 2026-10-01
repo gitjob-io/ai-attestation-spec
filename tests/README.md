@@ -18,6 +18,8 @@ works as a CI gate. `node --test` (from the repository root) runs the rest:
   every committed fixture byte-for-byte. Schema checks use a small built-in validator for the
   keywords these schemas use; it throws on any other keyword rather than skipping it.
 - `verify-cli.test.mjs` — regression test for the verifier's command-line entry point.
+- `canonicalize.test.mjs` — the signing input is RFC 8785 canonical JSON over every field but
+  `signature`, including nested values and a JSON-parsed `"__proto__"` key.
 
 Both gates run in CI on every push to `main` and every pull request
 (`.github/workflows/conformance.yml`).
