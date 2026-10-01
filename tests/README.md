@@ -9,9 +9,18 @@ node tests/run-vectors.mjs
 # ✓ case 1 (valid) … 4/4 vectors passed
 ```
 
-The runner drives `examples/tools/verify.mjs` and exits non-zero on the first mismatch, so it
-works as a CI gate. `verify-cli.test.mjs` (`node --test tests/verify-cli.test.mjs`) is a
-regression test for the verifier's command-line entry point.
+The runner drives `examples/tools/verify.mjs` and exits non-zero on any mismatch, so it
+works as a CI gate. `node --test` (from the repository root) runs the rest:
+
+- `fixtures.test.mjs` — every file in `examples/` conforms to its schema in `examples/schema/`,
+  each example receipt verifies as the result its filename names (and the verifier's output
+  conforms to `verify-result.schema.json`), and `examples/tools/generate.mjs` still reproduces
+  every committed fixture byte-for-byte. Schema checks use a small built-in validator for the
+  keywords these schemas use; it throws on any other keyword rather than skipping it.
+- `verify-cli.test.mjs` — regression test for the verifier's command-line entry point.
+
+Both gates run in CI on every push to `main` and every pull request
+(`.github/workflows/conformance.yml`).
 
 ## Format
 

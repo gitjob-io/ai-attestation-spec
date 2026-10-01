@@ -1,0 +1,22 @@
+name: conformance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Conformance vectors
+        run: node tests/run-vectors.mjs
+      - name: Fixture integrity and verifier CLI
+        run: node --test
