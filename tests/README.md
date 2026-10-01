@@ -17,7 +17,8 @@ works as a CI gate. `node --test` (from the repository root) runs the rest:
   conforms to `verify-result.schema.json`), and `examples/tools/generate.mjs` still reproduces
   every committed fixture byte-for-byte. Schema checks use a small built-in validator for the
   keywords these schemas use; it throws on any other keyword rather than skipping it.
-- `verify-cli.test.mjs` — regression test for the verifier's command-line entry point.
+- `verify-cli.test.mjs` — the verifier's command line: runs from paths with spaces, and exits
+  0 for `valid`, 1 for any other result, 2 when it cannot produce a result (bad or missing input).
 - `canonicalize.test.mjs` — the signing input is RFC 8785 canonical JSON over every field but
   `signature`, including nested values and a JSON-parsed `"__proto__"` key.
 - `signature-encoding.test.mjs` — the verifier accepts only canonical encodings of a 64-byte

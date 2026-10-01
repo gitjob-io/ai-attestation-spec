@@ -17,6 +17,10 @@
 // Usage:
 //   node verify.mjs <receipt.json> [key-set.json]
 // Defaults the key set to ../keys.json relative to this file.
+//
+// Exit status: 0 when the result is `valid`, 1 for any other result, 2 when
+// no result could be produced (usage error, unreadable file, invalid JSON, or
+// a receipt / key set that is not a JSON object).
 
 import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -96,8 +100,23 @@ if (invokedDirectly) {
     process.exit(2);
   }
   const keySetPath = process.argv[3] || resolve(HERE, "..", "keys.json");
-  const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
-  const keySet = JSON.parse(readFileSync(keySetPath, "utf8"));
+  // An input error must not share exit status 1 with a `tampered` result.
+  const readObject = (path, what) => {
+    let value;
+    try {
+      value = JSON.parse(readFileSync(path, "utf8"));
+    } catch (error) {
+      console.error(`verify.mjs: cannot read ${what} ${path}: ${error.message}`);
+      process.exit(2);
+    }
+    if (value === null || typeof value !== "object" || Array.isArray(value)) {
+      console.error(`verify.mjs: ${what} ${path} is not a JSON object`);
+      process.exit(2);
+    }
+    return value;
+  };
+  const receipt = readObject(receiptPath, "receipt");
+  const keySet = readObject(keySetPath, "key set");
   const res = verifyReceipt(receipt, keySet);
   console.log(JSON.stringify(res, null, 2));
   process.exit(res.result === "valid" ? 0 : 1);

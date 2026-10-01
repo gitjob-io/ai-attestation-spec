@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,5 +38,33 @@ test("verify.mjs CLI runs from a path containing a space", () => {
     assert.equal(JSON.parse(tampered.stdout).result, "tampered");
   } finally {
     rmSync(dirname(root), { recursive: true, force: true });
+  }
+});
+
+// Regression: unreadable or malformed input used to crash with a stack trace
+// and exit 1 -- the same status as a `tampered` result. It now exits 2.
+test("verify.mjs CLI exits 2, not 1, when it cannot produce a result", () => {
+  const dir = mkdtempSync(join(tmpdir(), "attest-input-"));
+  try {
+    const files = { notJson: "{ not json", nullJson: "null", arrayJson: "[]" };
+    for (const [name, body] of Object.entries(files)) writeFileSync(join(dir, name), body);
+    const verify = join(EXAMPLES, "tools", "verify.mjs");
+    const valid = join(EXAMPLES, "receipts", "valid.json");
+    const cases = [
+      [join(dir, "missing.json")],
+      [join(dir, "notJson")],
+      [join(dir, "nullJson")],
+      [join(dir, "arrayJson")],
+      [valid, join(dir, "missing.json")],
+      [valid, join(dir, "nullJson")],
+    ];
+    for (const args of cases) {
+      const run = spawnSync(process.execPath, [verify, ...args], { encoding: "utf8" });
+      assert.equal(run.status, 2, `${args.join(" ")}: ${run.stderr}`);
+      assert.equal(run.stdout, "");
+      assert.match(run.stderr, /^verify\.mjs: /);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });
