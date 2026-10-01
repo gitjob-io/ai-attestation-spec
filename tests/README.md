@@ -20,6 +20,9 @@ works as a CI gate. `node --test` (from the repository root) runs the rest:
 - `verify-cli.test.mjs` — regression test for the verifier's command-line entry point.
 - `canonicalize.test.mjs` — the signing input is RFC 8785 canonical JSON over every field but
   `signature`, including nested values and a JSON-parsed `"__proto__"` key.
+- `signature-encoding.test.mjs` — the verifier accepts only canonical encodings of a 64-byte
+  signature (unpadded base64url, or padded standard base64 as in `vectors.json`); whitespace,
+  stray padding or junk yields `tampered`.
 
 Both gates run in CI on every push to `main` and every pull request
 (`.github/workflows/conformance.yml`).

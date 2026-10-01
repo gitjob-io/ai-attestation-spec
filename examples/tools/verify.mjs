@@ -33,6 +33,21 @@ function b64urlToBuffer(s) {
   return Buffer.from(s, "base64url");
 }
 
+// Decode a receipt signature strictly. Node's base64 decoders skip characters
+// outside the alphabet and ignore trailing data, so without this check
+// whitespace, padding or junk could be added to a valid receipt's signature and
+// it would still verify -- many byte-distinct receipts for one signing. Accept
+// only the canonical encodings of 64 raw bytes: base64url without padding (as
+// examples/schema/receipt.schema.json pins) or standard padded base64 (as the
+// conformance vectors in tests/vectors.json carry). Anything else -> null.
+function decodeSignature(s) {
+  if (typeof s !== "string") return null;
+  const buf = Buffer.from(s, "base64url");
+  if (buf.length !== 64) return null;
+  const canonical = buf.toString("base64url") === s || buf.toString("base64") === s;
+  return canonical ? buf : null;
+}
+
 function rawEd25519PublicKey(b64url) {
   const raw = b64urlToBuffer(b64url);
   const der = Buffer.concat([ED25519_SPKI_PREFIX, raw]);
@@ -54,12 +69,9 @@ export function verifyReceipt(receipt, keySet) {
   let signatureOk = false;
   try {
     const pub = rawEd25519PublicKey(key.public_key);
-    signatureOk = edVerify(
-      null,
-      canonicalSigningInput(receipt),
-      pub,
-      b64urlToBuffer(receipt.signature),
-    );
+    const sig = decodeSignature(receipt.signature);
+    signatureOk =
+      sig !== null && edVerify(null, canonicalSigningInput(receipt), pub, sig);
   } catch {
     signatureOk = false;
   }
